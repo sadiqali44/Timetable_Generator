@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9; /* Light background color */
+        }
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #f2f2f2;
+        }
+        .navbar .heading {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .navbar a {
+            color: #f2f2f2;
+            padding: 10px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        /* Table styles */
+        table {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            background-color: #fff;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: normal;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="heading">Staff List</div>
+        <div>
+            <a href="{% url 'timetable_list' %}">Timetable</a>
+            <a href="{% url 'subject_list' %}">Subjects</a>
+            <a href="{% url 'period_list' %}">Periods</a>
+            <a href="{% url 'course_list' %}">Course</a>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="{% url 'staff_create' %}" class="btn">Add New Staff</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Staff Name</th>
+                <th>Subjects</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for staff in staffs %}
+                <tr>
+                    <td>{{ staff.name }}</td>
+                    <td>
+                        {% if staff.subjects.count > 0 %}
+                            <ul>
+                                {% for subject in staff.subjects.all %}
+                                    <li>{{ subject.name }} - {{ subject.course.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            No subjects assigned
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'staff_update' staff.pk %}">Edit</a> |
+                        <a href="{% url 'staff_delete' staff.pk %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

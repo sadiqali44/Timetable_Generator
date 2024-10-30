@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9; /* Light background color */
+            margin: 0;
+            padding: 0;
+        }
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #f2f2f2;
+        }
+        .navbar .heading {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .navbar a {
+            color: #f2f2f2;
+            padding: 10px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        /* Form styles */
+        table {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff; /* White background for the form */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden; /* To apply border radius to table */
+        }
+        td {
+            padding: 10px;
+        }
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+            border: 1px solid #ddd; /* Light border */
+            border-radius: 4px; /* Rounded corners */
+        }
+        .button-container {
+            text-align: center; /* Center the button container */
+            margin-top: 20px; /* Add some space above */
+        }
+        a.back-button {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #007bff; /* Link color */
+            padding: 10px 15px;
+            border: 1px solid #007bff; /* Border for the back button */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        a.back-button:hover {
+            background-color: #007bff; /* Background on hover */
+            color: white; /* Text color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <div class="heading">Staff Form</div>
+    <div>
+        <a href="{% url 'timetable_list' %}">Timetable</a>
+        <a href="{% url 'subject_list' %}">Subjects</a>
+        <a href="{% url 'period_list' %}">Periods</a>
+    </div>
+</div>
+
+<h2 style="text-align: center;">{% if form.instance.pk %}Edit Staff{% else %}Add New Staff{% endif %}</h2>
+
+<form method="post" style="text-align: center;">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td><label for="id_name">Staff Name:</label></td>
+            <td><input type="text" name="name" id="id_name" placeholder="Enter staff name" value="{{ form.name.value|default_if_none:'' }}"></td>
+        </tr>
+        <tr>
+            <td><label>Subjects:</label></td>
+            <td>
+                <div class="checkbox-list">
+                    {% for subject in subjects %}
+                        <label>
+                            <input type="checkbox" name="subjects" value="{{ subject.pk }}"
+                            {% if subject in form.instance.subjects.all %} checked {% endif %}>
+                            {{ subject.name }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <div class="button-container">
+        <button type="submit">Save</button>
+        <a href="{% url 'staff_list' %}" class="back-button">Back to Staff List</a>
+    </div>
+</form>
+
+</body>
+</html>

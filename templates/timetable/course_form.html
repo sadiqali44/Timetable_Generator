@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Edit Course{% else %}Add Course{% endif %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #f2f2f2;
+        }
+        .navbar .heading {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .navbar a {
+            color: #f2f2f2;
+            padding: 10px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        /* Button styles */
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px auto;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Form styles */
+        form {
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="heading">Courses</div>
+        <div>
+            <a href="{% url 'timetable_list' %}">Timetable</a>
+            <a href="{% url 'period_list' %}">Periods</a>
+            <a href="{% url 'staff_list' %}">Staffs</a>
+            <a href="{% url 'subject_list' %}">Subjects</a>
+            <a href="{% url 'course_list' %}">Courses</a>
+        </div>
+    </div>
+
+    <h2>{% if form.instance.pk %}Edit Course{% else %}Add Course{% endif %}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Save</button>
+    </form>
+    <div style="text-align: center;">
+        <a href="{% url 'course_list' %}" class="btn">Back to Course List</a>
+    </div>
+
+</body>
+</html>

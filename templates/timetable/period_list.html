@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Periods</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #f2f2f2;
+        }
+        .navbar .heading {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .navbar a {
+            color: #f2f2f2;
+            padding: 10px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        /* Table styles */
+        table {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            background-color: #fff;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: normal;
+        }
+
+        /* Styling for Save Changes button */
+        .save-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 24px;
+            background-color: #4CAF50; /* Green background */
+            color: #fff; /* White text */
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .save-btn:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        .save-btn:active {
+            transform: scale(0.98); /* Slight scale down on click */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="heading">Periods</div>
+        <div>
+            <a href="{% url 'timetable_list' %}">Timetable</a>
+            <a href="{% url 'subject_list' %}">Subjects</a>
+            <a href="{% url 'staff_list' %}">Staffs</a>
+            <a href="{% url 'course_list' %}">Course</a>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Day</th>
+                {% for period_number in period_numbers %}
+                    <th>Period {{ period_number }}</th>
+                {% endfor %}
+            </tr>
+            {% for day in days %}
+                <tr>
+                    <td>{{ day }}</td>
+                    {% for period_number in period_numbers %}
+                        <td>
+                            {% for period in periods %}
+                                {% if period.day == day and period.period_number == period_number %}
+                                   start time:  <input type="time" name="start_time_{{ period.pk }}" value="{{ period.start_time|time:"H:i" }}">
+                                    <br>
+                                   end time:  <input type="time" name="end_time_{{ period.pk }}" value="{{ period.end_time|time:"H:i" }}">
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <button type="submit" class="save-btn">Save Changes</button>
+    </form>
+    
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!-- timetable_entry_update.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Timetable Entry</title>
+</head>
+<body>
+    <h2>Update Timetable Entry for {{ entry.course.name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{% url 'timetable_list' %}">Back to Timetable</a>
+</body>
+</html>

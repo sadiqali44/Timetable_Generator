@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #f2f2f2;
+        }
+        .navbar .heading {
+            font-weight: bold;
+            font-size: 20px;
+            color: #f2f2f2;
+        }
+        .navbar a {
+            color: #f2f2f2;
+            text-align: center;
+            padding: 10px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        /* Generate Timetable button */
+        .generate-btn {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .generate-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Table styles */
+        table {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            background-color: #fff;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: normal;
+        }
+        td {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Heading style */
+        h3 {
+            text-align: center;
+            color: #333;
+        }
+        /* Edit Timetable button */
+        .edit-timetable-btn {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .edit-timetable-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="heading">Timetable</div>
+        <div>
+            <a href="{% url 'subject_list' %}">Subjects</a>
+            <a href="{% url 'staff_list' %}">Staffs</a>
+            <a href="{% url 'period_list' %}">Periods</a>
+            <a href="{% url 'course_list' %}">Course</a>
+        </div>
+    </div>
+
+    <!-- Generate Timetable Button -->
+    <div style="text-align: center;">
+        <a href="{% url 'generate_timetable' %}" class="generate-btn">Generate Timetable</a>
+    </div>
+
+    <!-- Timetable Content -->
+    {% for course, course_entries in timetable_data.items %}
+        <h3>{{ course.name }}</h3>
+        <table>
+            <tr>
+                <th>Day</th>
+                {% for period_number in period_numbers %}
+                    <th>Period {{ period_number }}</th>
+                {% endfor %}
+            </tr>
+            {% for day in days %}
+                <tr>
+                    <td>{{ day }}</td>
+                    {% for period_number in period_numbers %}
+                        <td>
+                            {% for entry in course_entries %}
+                                {% if entry.period.day == day and entry.period.period_number == period_number %}
+                                    <div>
+                                        <strong>{{ entry.subject.name }}</strong> <br>
+                                        <span>{{ entry.staff.name }}</span> <br>
+                                        <small>{{ entry.period.start_time|time:"H:i" }} - {{ entry.period.end_time|time:"H:i" }}</small>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                    <td>
+                        <a href="{% url 'edit_timetable_row' course.id day %}" class="edit-timetable-btn">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
+</body>
+</html>

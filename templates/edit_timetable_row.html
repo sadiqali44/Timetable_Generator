@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Timetable - {{ course.name }} ({{ day }})</title>
+    <style>
+        /* Add styles for consistency with other templates */
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        h2 { text-align: center; }
+        table { width: 90%; margin: 20px auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; }
+        a { text-decoration: none; color: #007bff; }
+    </style>
+    <script>
+        function updateStaff(periodNumber) {
+            const subjectId = document.querySelector(`select[name="subject_${periodNumber}"]`).value;
+
+            fetch(`/get_staff/${subjectId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const staffSelect = document.querySelector(`select[name="staff_${periodNumber}"]`);
+                    staffSelect.innerHTML = "";
+                    data.staff.forEach(staff => {
+                        const option = document.createElement("option");
+                        option.value = staff.id;
+                        option.textContent = staff.name;
+                        staffSelect.appendChild(option);
+                    });
+                });
+        }
+    </script>
+</head>
+<body>
+    {% load custom_filters %}
+    <h2>Edit Timetable for {{ course.name }} - {{ day }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Period</th>
+                <th>Subject</th>
+                <th>Staff</th>
+            </tr>
+            {% for entry in timetable_entries %}
+                <tr>
+                    <td>Period {{ entry.period.period_number }}</td>
+                    <td>
+                        <select name="subject_{{ entry.period.period_number }}" onchange="updateStaff({{ entry.period.period_number }})">
+                            {% for subject in subjects %}
+                                <option value="{{ subject.id }}" {% if entry.subject == subject %}selected{% endif %}>
+                                    {{ subject.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="staff_{{ entry.period.period_number }}">
+                            {% for staff in initial_staff_per_subject|get_item:entry.subject.id %}
+                                <option value="{{ staff.id }}" {% if entry.staff == staff %}selected{% endif %}>
+                                    {{ staff.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div style="text-align: center;">
+            <button type="submit">Save Changes</button>
+            <a href="{% url 'timetable_list' %}">Cancel</a>
+        </div>
+
+    </form>
+</body>
+</html>
